@@ -33,10 +33,20 @@ class StepsViewController: UIViewController {
         getDataForLastWeek()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        updateStep()
+    }
+    
+    func updateStep() {
+        pedoMeter.startUpdates(from: Date()) { (data, error) in
+            self.getDataForLastWeek()
+        }
+    }
+    
     func setupChart() {
         pieChartView.chartDescription?.text = "Steps Count today"
         stepEmtry.label = "Steps today"
-        pieChartView.isDrawEntryLabelsEnabled = false
         stepGoal.value = goalStep
         stepGoal.label = "Goal"
         updatePieChartData()
@@ -113,16 +123,16 @@ class StepsViewController: UIViewController {
     
     func getDataForLastWeek() {
         if CMPedometer.isStepCountingAvailable() {
-
+            self.days = []
+            self.stepsTaken = []
             let queue = DispatchQueue(label: "com.example.my-serial-queue")
             
             let formatter = DateFormatter()
             formatter.dateFormat = "d MMM"
             queue.sync {
-                let today = Date()
                 
                 for day in 0...6 {
-                    let fromDate = Date(timeIntervalSinceNow: Double(-7+day) * 86400)
+                    let fromDate = Date(timeIntervalSinceNow: Double(-7 + day) * 86400)
                     let toDate = Date(timeIntervalSinceNow: Double(-7 + day + 1) * 86400)
                     
                     let dateStr = formatter.string(from: toDate)
@@ -134,12 +144,15 @@ class StepsViewController: UIViewController {
                             self.stepsTaken.append(Int(data.numberOfSteps))
                             print("Days :\(self.days)")
                             print("Steps :\(self.stepsTaken)")
-                            
+
                             if self.days.count == 7 {
+                                print(self.stepsTaken)
                                 self.stepEmtry.value = Double(self.stepsTaken.last ?? 0)
-                                self.updatePieChartData()
                                 self.updateGraph()
+                                self.updatePieChartData()
                                 self.view.reloadInputViews()
+                                self.pieChartView.reloadInputViews()
+                                self.weeklyStepsLineChartView.reloadInputViews()
                             }
                         }
                     })
