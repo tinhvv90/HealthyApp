@@ -19,7 +19,6 @@ class StepsTableViewController: UITableViewController {
     @IBOutlet weak var distanceLabel: UILabel!
     @IBOutlet weak var pointChartLine: LineChartView!
     
-    
     var stepEmtry = 0.0
     var stepGoal = 0.0
     var distance = 0.0

@@ -16,3 +16,5 @@ https://github.com/CardinalNow/iOS-CircleProgressView/blob/master/CircleProgress
 // Reverse Engineering
 https://github.com/iosre/iOSAppReverseEngineering
 
+//  popover
+https://spin.atomicobject.com/2018/08/08/dim-popover-background/

@@ -216,6 +216,4 @@ import UIKit
             displayLink?.isPaused = true
         }
     }
-    
-    
 }
