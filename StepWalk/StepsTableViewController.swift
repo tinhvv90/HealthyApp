@@ -1,8 +1,8 @@
 //
-//  StepsViewController.swift
+//  StepsTableViewController.swift
 //  StepWalk
 //
-//  Created by ptud2 on 11/04/2019.
+//  Created by ptud2 on 12/04/2019.
 //  Copyright © 2019 Agency. All rights reserved.
 //
 
@@ -10,15 +10,19 @@ import UIKit
 import Charts
 import CoreMotion
 
-class StepsViewController: UIViewController {
+class StepsTableViewController: UITableViewController {
 
-    @IBOutlet weak var circleViewPregress: CircleViewProgress!
-    @IBOutlet weak var weeklyStepsLineChartView: LineChartView!
-    @IBOutlet weak var stepsLabel: UILabel!
-    @IBOutlet weak var goalStepLabel: UILabel!
+    @IBOutlet weak var stepsCircleView: CircleViewProgress!
+    @IBOutlet weak var stepsNumber: UILabel!
+    @IBOutlet weak var goalLabel: UILabel!
+    @IBOutlet weak var weekStepsChartLine: LineChartView!
+    @IBOutlet weak var distanceLabel: UILabel!
+    @IBOutlet weak var pointChartLine: LineChartView!
     
-    var stepEmtry = PieChartDataEntry(value: 0)
-    var stepGoal = PieChartDataEntry(value: 0)
+    
+    var stepEmtry = 0.0
+    var stepGoal = 0.0
+    var distance = 0.0
     
     var goalStep: Double = 5000
     
@@ -27,14 +31,19 @@ class StepsViewController: UIViewController {
     let activityManager = CMMotionActivityManager()
     let pedoMeter = CMPedometer()
     
-    var cnt = 0
-    
     override func viewDidLoad() {
         super.viewDidLoad()
+        startUpdating()
         setupChart()
-        getDataForLastWeek()
-        goalStepLabel.text = "MUC TIEU: \(Int(goalStep))"
-        stepsLabel.text = "\(Int(stepEmtry.value))"
+        goalLabel.text = "MUC TIEU: \(Int(goalStep) / 1000) Km"
+        stepsNumber.text = "\(Int(stepEmtry))"
+        self.distanceLabel.text = "Da Di: \(self.roundDouble(a: distance / 1000)) Km"
+    }
+    
+    private func startUpdating() {
+        if CMPedometer.isStepCountingAvailable() {
+            getDataForLastWeek()
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -49,15 +58,15 @@ class StepsViewController: UIViewController {
     }
     
     func setupChart() {
-        weeklyStepsLineChartView.chartDescription?.enabled = false
-        weeklyStepsLineChartView.setScaleEnabled(false)
-        weeklyStepsLineChartView.leftAxis.enabled=false
-        weeklyStepsLineChartView.rightAxis.enabled=false
+        weekStepsChartLine.chartDescription?.enabled = false
+        weekStepsChartLine.setScaleEnabled(false)
+        weekStepsChartLine.leftAxis.enabled=false
+        weekStepsChartLine.rightAxis.enabled=false
         
-        weeklyStepsLineChartView.xAxis.drawGridLinesEnabled = false
-        weeklyStepsLineChartView.xAxis.labelPosition = .bottom
-        weeklyStepsLineChartView.xAxis.labelFont = UIFont(name:"HelveticaNeue-Bold", size: 13.0)!
-        weeklyStepsLineChartView.legend.enabled = false
+        weekStepsChartLine.xAxis.drawGridLinesEnabled = false
+        weekStepsChartLine.xAxis.labelPosition = .bottom
+        weekStepsChartLine.xAxis.labelFont = UIFont(name:"HelveticaNeue-Bold", size: 13.0)!
+        weekStepsChartLine.legend.enabled = false
     }
     
     func updateGraph() {
@@ -71,20 +80,20 @@ class StepsViewController: UIViewController {
         }
         
         let line1 = LineChartDataSet(values: lineChartEntry, label: "") //Here we convert lineChartEntry to a LineChartDataSet
-
+        
         //  line1.colors = [NSUIColor.blue] //Sets the colour to blue
         line1.drawCircleHoleEnabled = true
         
         line1.circleHoleColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
         line1.setColor(.red)
         line1.setCircleColor(.red)
-
+        
         /// The radius of the drawn circles.
         line1.circleRadius = 4
         
         /// The hole radius of the drawn circles
         line1.circleHoleRadius = 3
-
+        
         line1.lineWidth = 0.3
         line1.valueFont = .systemFont(ofSize: 9)
         line1.formLineWidth = 0.3
@@ -103,9 +112,9 @@ class StepsViewController: UIViewController {
         data.addDataSet(line1) //Adds the line to the dataSet
         
         
-        weeklyStepsLineChartView.data = data //finally - it adds the chart data to the chart and causes an update
-
-        let xAxisValue = weeklyStepsLineChartView.xAxis
+        weekStepsChartLine.data = data //finally - it adds the chart data to the chart and causes an update
+        
+        let xAxisValue = weekStepsChartLine.xAxis
         
         //  xAxisValue.valueFormatter = axisFormatDelegate
         xAxisValue.valueFormatter = IndexAxisValueFormatter(values: days)
@@ -136,15 +145,11 @@ class StepsViewController: UIViewController {
                             self.stepsTaken.append(Int(data.numberOfSteps))
                             print("Days :\(self.days)")
                             print("Steps :\(self.stepsTaken)")
-
+                            self.distance = data.distance?.doubleValue ?? 0.0
                             if self.days.count == 7 {
                                 print(self.stepsTaken)
-                                self.stepEmtry.value = Double(self.stepsTaken.last ?? 0)
-                                self.updateGraph()
+                                self.stepEmtry = Double(self.stepsTaken.last ?? 0)
                                 self.setupProgressView()
-//                                self.pieChartView.reloadInputViews()
-                                self.weeklyStepsLineChartView.reloadInputViews()
-                                self.view.setNeedsDisplay()
                             }
                         }
                     })
@@ -154,9 +159,20 @@ class StepsViewController: UIViewController {
     }
     
     func setupProgressView() {
-        self.circleViewPregress.progress = stepEmtry.value / goalStep
-        self.stepsLabel.text = "\(Int(stepEmtry.value))"
-        self.view.setNeedsDisplay()
+        DispatchQueue.main.async {
+            self.updateGraph()
+            self.stepsCircleView.progress = self.distance / self.goalStep
+            self.stepsNumber.text = "\(Int(self.stepEmtry))"
+            let distanceKm = self.distance / 1000
+            self.distanceLabel.text = "Da Di: \(self.roundDouble(a: distanceKm)) Km"
+            self.tableView.reloadData()
+            self.tableView.setNeedsDisplay()
+        }
+    }
+    
+    func roundDouble(a:Double) -> Double {
+        let mu = pow(10.0,2.0)
+        let r = round( a * mu ) / mu
+        return r
     }
 }
-

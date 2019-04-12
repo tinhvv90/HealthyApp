@@ -16,6 +16,9 @@
 		7D17CE1A225EDB1D00F8CBC9 /* StepsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D17CE19225EDB1D00F8CBC9 /* StepsViewController.swift */; };
 		7D17CE1D225F1BE900F8CBC9 /* HealthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D17CE1C225F1BE900F8CBC9 /* HealthManager.swift */; };
 		7D17CE20225F1FEE00F8CBC9 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D17CE1F225F1FEE00F8CBC9 /* HealthKit.framework */; };
+		7D59EE6A2260229F00D7A127 /* CircleViewProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D59EE692260229F00D7A127 /* CircleViewProgress.swift */; };
+		7D59EE6C2260326100D7A127 /* StepsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D59EE6B2260326100D7A127 /* StepsTableViewController.swift */; };
+		7D59EE6E22604A2C00D7A127 /* GoalPopupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D59EE6D22604A2C00D7A127 /* GoalPopupViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,6 +36,9 @@
 		7D17CE1C225F1BE900F8CBC9 /* HealthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthManager.swift; sourceTree = "<group>"; };
 		7D17CE1E225F1FED00F8CBC9 /* StepWalk.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = StepWalk.entitlements; sourceTree = "<group>"; };
 		7D17CE1F225F1FEE00F8CBC9 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
+		7D59EE692260229F00D7A127 /* CircleViewProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleViewProgress.swift; sourceTree = "<group>"; };
+		7D59EE6B2260326100D7A127 /* StepsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepsTableViewController.swift; sourceTree = "<group>"; };
+		7D59EE6D22604A2C00D7A127 /* GoalPopupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalPopupViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -87,6 +93,9 @@
 				7D174EAB225D9D9A008F752E /* Assets.xcassets */,
 				7D174EAD225D9D9A008F752E /* LaunchScreen.storyboard */,
 				7D174EB0225D9D9A008F752E /* Info.plist */,
+				7D59EE692260229F00D7A127 /* CircleViewProgress.swift */,
+				7D59EE6B2260326100D7A127 /* StepsTableViewController.swift */,
+				7D59EE6D22604A2C00D7A127 /* GoalPopupViewController.swift */,
 			);
 			path = StepWalk;
 			sourceTree = "<group>";
@@ -241,8 +250,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7D59EE6E22604A2C00D7A127 /* GoalPopupViewController.swift in Sources */,
 				7D174EA7225D9D95008F752E /* ViewController.swift in Sources */,
+				7D59EE6C2260326100D7A127 /* StepsTableViewController.swift in Sources */,
 				7D17CE1A225EDB1D00F8CBC9 /* StepsViewController.swift in Sources */,
+				7D59EE6A2260229F00D7A127 /* CircleViewProgress.swift in Sources */,
 				7D174EA5225D9D95008F752E /* AppDelegate.swift in Sources */,
 				7D17CE1D225F1BE900F8CBC9 /* HealthManager.swift in Sources */,
 			);
