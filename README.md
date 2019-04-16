@@ -23,3 +23,6 @@ https://spin.atomicobject.com/2018/08/08/dim-popover-background/
 // Health kit
 https://swift.unicorn.tv/articles/step-counter-in-healthkit
 
+// demo for pedometer
+
+https://github.com/YurchukV/steps/blob/master/Widget/TodayViewController.swift
