@@ -18,11 +18,11 @@ class GoalPopupViewController: UIViewController {
     
     weak var delegate : GoalPopupViewControllerDelegate?
     
-    var goalSteps = ["5 Km", "10 Km"]
+    var goalSteps: [String] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        goalSteps = ["5 Km", "10 Km"]
         // Do any additional setup after loading the view.
     }
     

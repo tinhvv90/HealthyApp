@@ -27,11 +27,7 @@ class StepsTableViewController: UITableViewController {
     
     var days:[String] = []
     var moneyForDistance: [Int] = []
-    var distanceSteps: [Double] = []  {
-        didSet {
-            self.getMoneyForDistance()
-        }
-    }
+    var distanceSteps: [Double] = []
     var stepsTaken:[Int] = []
     let activityManager = CMMotionActivityManager()
     let pedoMeter = CMPedometer()
@@ -65,22 +61,19 @@ class StepsTableViewController: UITableViewController {
         }
     }
     
-    func getMoneyForDistance() {
-        for step in self.distanceSteps {
-            if Double(step) > 1 && Double(step) < 5000 {
-                self.moneyForDistance.append(10000)
-            } else if Double(step) > 5000 && Double(step) < 8000 {
-                self.moneyForDistance.append(15000)
-            } else if Double(step) > 8000 {
-                self.moneyForDistance.append(20000)
-            }
+    func getMoneyForDistance(distance: Double) {
+        if Double(distance) > 1 && Double(distance) < 5000 {
+            self.moneyForDistance.append(10000)
+        } else if Double(distance) > 5000 && Double(distance) < 8000 {
+            self.moneyForDistance.append(15000)
+        } else if Double(distance) > 8000 {
+            self.moneyForDistance.append(20000)
         }
-        self.setupProgressView()
     }
     
     func updateStep() {
         pedoMeter.startUpdates(from: Date()) { (data, error) in
-            self.getDataForLastWeek()
+            self.getStepsOfDay()
         }
     }
     
@@ -94,6 +87,16 @@ class StepsTableViewController: UITableViewController {
         weekStepsChartLine.xAxis.labelPosition = .bottom
         weekStepsChartLine.xAxis.labelFont = UIFont(name:"HelveticaNeue-Bold", size: 13.0)!
         weekStepsChartLine.legend.enabled = false
+        
+        pointChartLine.chartDescription?.enabled = false
+        pointChartLine.setScaleEnabled(false)
+        pointChartLine.leftAxis.enabled=false
+        pointChartLine.rightAxis.enabled=false
+        
+        pointChartLine.xAxis.drawGridLinesEnabled = false
+        pointChartLine.xAxis.labelPosition = .bottom
+        pointChartLine.xAxis.labelFont = UIFont(name:"HelveticaNeue-Bold", size: 13.0)!
+        pointChartLine.legend.enabled = false
     }
     
     func updateChartDisplaySteps() {
@@ -207,12 +210,11 @@ class StepsTableViewController: UITableViewController {
             self.days = []
             self.stepsTaken = []
             self.distanceSteps = []
-            let queue = DispatchQueue(label: "com.example.my-serial-queue")
+            self.moneyForDistance = []
             
             let formatter = DateFormatter()
             formatter.dateFormat = "d MMM"
-            queue.sync {
-                
+            DispatchQueue.global().async {
                 for day in 0...6 {
                     let fromDate = Date(timeIntervalSinceNow: Double(-7 + day) * 86400)
                     let toDate = Date(timeIntervalSinceNow: Double(-7 + day + 1) * 86400)
@@ -223,10 +225,12 @@ class StepsTableViewController: UITableViewController {
                         if error == nil {
                             print("\(dateStr) : \(data.numberOfSteps)")
                             self.days.append(dateStr)
-                            self.stepsTaken.append(Int(data.numberOfSteps))
+                            self.stepsTaken.append(Int(truncating: data.numberOfSteps))
                             self.distanceSteps.append(data.distance?.doubleValue ?? 0.0)
+                            self.getMoneyForDistance(distance: data.distance?.doubleValue ?? 0.0)
                             print("Days :\(self.days)")
                             print("Steps :\(self.stepsTaken)")
+                            print("money: \(self.moneyForDistance)")
                             self.distance = data.distance?.doubleValue ?? 0.0
                             if self.days.count == 7 {
                                 print(self.stepsTaken)
@@ -235,6 +239,40 @@ class StepsTableViewController: UITableViewController {
                             }
                         }
                     })
+                }
+            }
+        }
+    }
+    
+    func getStepsOfDay() {
+        let cal = Calendar(identifier: .gregorian)
+        let midNight = cal.startOfDay(for: Date())
+        
+        self.pedoMeter.queryPedometerData(from: midNight, to: Date()) { (data, error) in
+            if let data = data {
+                print(data.numberOfSteps.intValue)
+                self.moneyForDistance.removeLast()
+                self.distance = data.distance?.doubleValue ?? 0.0
+                self.stepEmtry = data.numberOfSteps.doubleValue
+                if self.moneyForDistance.count < 7 {
+                    self.getMoneyForDistance(distance: self.distance)
+                }
+                self.stepsTaken.removeLast()
+                print(self.stepsTaken)
+                if self.stepsTaken.count < 7 {
+                    self.stepsTaken.append(Int(self.stepEmtry))
+                }
+                print(self.stepsTaken)
+                DispatchQueue.main.async {
+                    self.stepsNumber.text = "\(Int(self.stepEmtry))"
+                    let distanceKm = self.distance / 1000
+                    self.distanceLabel.text = "Da Di: \(self.roundDouble(a: distanceKm)) Km"
+//                    if self.distance < self.goalStep {
+//                        UIAlertController.init(title: "Hoan Thanh", message: "Chuc mung ban da hoan thanh muc tieu hom nay", preferredStyle: UIAlertController.Style.alert)
+//                    }
+                    self.stepsCircleView.progress = self.distance / self.goalStep
+                    self.goalLabel.text = "MUC TIEU: \(Int(self.goalStep) / 1000) Km"
+                    self.updateChartDisplaySteps()
                 }
             }
         }
@@ -249,8 +287,6 @@ class StepsTableViewController: UITableViewController {
             self.distanceLabel.text = "Da Di: \(self.roundDouble(a: distanceKm)) Km"
             self.stepsCircleView.progress = self.distance / self.goalStep
             self.goalLabel.text = "MUC TIEU: \(Int(self.goalStep) / 1000) Km"
-            self.tableView.reloadData()
-            self.tableView.setNeedsDisplay()
         }
     }
     

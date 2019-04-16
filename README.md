@@ -18,3 +18,8 @@ https://github.com/iosre/iOSAppReverseEngineering
 
 //  popover
 https://spin.atomicobject.com/2018/08/08/dim-popover-background/
+
+
+// Health kit
+https://swift.unicorn.tv/articles/step-counter-in-healthkit
+

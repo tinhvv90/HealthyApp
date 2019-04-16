@@ -136,7 +136,7 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Steps App" id="AOF-Oh-tje">
-                        <barButtonItem key="rightBarButtonItem" title="Item" id="MWw-vt-vAJ">
+                        <barButtonItem key="rightBarButtonItem" title="muc tieu" id="MWw-vt-vAJ">
                             <connections>
                                 <segue destination="6Eb-Ag-3Gi" kind="popoverPresentation" identifier="goalPopup" popoverAnchorBarButtonItem="MWw-vt-vAJ" id="hHz-Ke-PjY">
                                     <popoverArrowDirection key="popoverArrowDirection" up="YES" down="YES" left="YES" right="YES"/>
@@ -167,6 +167,10 @@
                         <subviews>
                             <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hs5-pN-iA9">
                                 <rect key="frame" x="0.0" y="27" width="200" height="173"/>
+                                <connections>
+                                    <outlet property="dataSource" destination="6Eb-Ag-3Gi" id="um5-VG-06r"/>
+                                    <outlet property="delegate" destination="6Eb-Ag-3Gi" id="T1W-XS-2AJ"/>
+                                </connections>
                             </pickerView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Mục Tiêu" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YxR-lS-INA">
                                 <rect key="frame" x="8" y="2" width="184" height="21"/>
@@ -200,7 +204,6 @@
         <!--Navigation Controller-->
         <scene sceneID="sm4-rh-bTA">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="tC3-8d-1By" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Kjn-fJ-beg" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="rlz-5P-B12">
@@ -212,6 +215,7 @@
                         <segue destination="nVN-aU-qEK" kind="relationship" relationship="rootViewController" id="TSU-px-23J"/>
                     </connections>
                 </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="tC3-8d-1By" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2928.8000000000002" y="152.47376311844079"/>
         </scene>
